@@ -1,0 +1,141 @@
+* {
+    font-family: var(--font-sans);
+    font-size: var(--font-size-1);
+}
+
+html,
+body {
+    height: 100%;
+    line-height: var(--font-lineheight-2);
+}
+
+html {
+    background-image: var(--gradient-15);
+}
+
+body {
+    display: grid;
+    place-items: center;
+    margin: 0;
+    padding: 0;
+}
+
+main {
+    position: relative;
+    padding: var(--size-5);
+    margin: var(--size-3);
+    background-color: var(--gray-0);
+    box-shadow: var(--shadow-5);
+    border-radius: var(--radius-3);
+    max-width: 600px;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-weight: var(--font-weight-9);
+    color: var(--gray-8);
+    margin-top: 0;
+    margin-bottom: var(--size-3);
+}
+
+h1 {
+    font-size: var(--font-size-fluid-2);
+}
+
+p,
+ul,
+ol {
+    color: var(--gray-7);
+}
+
+ul,
+ol {
+    li::marker {
+        color: var(--violet-7);
+    }
+}
+
+a {
+    color: var(--violet-7);
+    text-decoration: underline;
+
+    &:hover {
+        text-decoration: none;
+    }
+}
+
+form {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: var(--size-3);
+    padding-top: var(--size-3);
+
+    & > * {
+        flex: 1 0 auto;
+    }
+}
+
+.custom-file-input {
+    display: none;
+
+    & + label {
+
+    }
+}
+
+.btn {
+    position: relative;
+    display: block;
+    text-align: center;
+    text-decoration: none;
+    font-size: var(--font-size-2);
+    font-weight: var(--font-weight-5);
+    line-height: var(--font-lineheight-2);
+    color: currentColor;
+    padding: var(--size-3) var(--size-5);
+    border-width: var(--border-size-2);
+    border-style: solid;
+    border-radius: var(--radius-2);
+    box-shadow: var(--shadow-2);
+    cursor: pointer;
+    transition: all .3s linear;
+
+    &:hover {
+        box-shadow: var(--shadow-1);
+    }
+
+    &:disabled {
+        opacity: .5;
+        pointer-events: none;
+        cursor: not-allowed;
+    }
+
+    &:active {
+        box-shadow: var(--inner-shadow-1);
+    }
+
+    &.btn-primary {
+        color: var(--violet-7);
+        background-color: var(--violet-1);
+        border-color: var(--violet-2);
+
+        &:hover {
+            background-color: var(--violet-2);
+        }
+    }
+
+    &.btn-secondary {
+        color: var(--orange-7);
+        background-color: var(--orange-1);
+        border-color: var(--orange-2);
+
+        &:hover {
+            background-color: var(--orange-2);
+        }
+    }
+}
