@@ -6,7 +6,6 @@ use App\Classes\CleanDescription;
 use App\Classes\DetectCategory;
 use App\Classes\FormatDate;
 use Illuminate\Http\Request;
-use Illuminate\Support\Collection;
 
 class FileController extends Controller
 {
@@ -37,14 +36,6 @@ class FileController extends Controller
                 'conversions' => [CleanDescription::class]
             ]
         ]);
-    }
-
-    /**
-     * @return Response
-     */
-    public function form()
-    {
-        return view('form');
     }
 
     /**
