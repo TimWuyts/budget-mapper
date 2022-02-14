@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Classes\CleanDescription;
+use App\Classes\DetectCategory;
+use App\Classes\FormatDate;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 
@@ -17,12 +19,12 @@ class FileController extends Controller
             (object) [
                 'input' => 'Details',
                 'output' => 'Category Name',
-                //'conversions' => [new CategoryDetection()]
+                'conversions' => [DetectCategory::class]
             ],
             (object) [
                 'input' => 'Uitvoeringsdatum',
                 'output' => 'Date',
-                //'conversions' => [new DateFormatter()],
+                'conversions' => [FormatDate::class],
             ],
             (object) [
                 'input' => 'Bedrag',
@@ -33,66 +35,6 @@ class FileController extends Controller
                 'input' => 'Details',
                 'output' => 'Note',
                 'conversions' => [CleanDescription::class]
-            ]
-        ]);
-
-        $this->categoryMapping = collect([
-            (object) [
-                'name' => 'Boodschappen',
-                'income' => false,
-                'expense' => true,
-                'keywords' => [
-                    'delhaize',
-                    'aldi',
-                    'albert heijn',
-                    'okay',
-                    'colruyt'
-                ]
-            ],
-            (object) [
-                'name' => 'Eten & Drinken',
-                'income' => false,
-                'expense' => true,
-                'keywords' => [
-                    'vitta',
-                    'frietjes',
-                    'donalds',
-                    'burger'
-                ]
-            ],
-            (object) [
-                'name' => 'Gezondheidszorg',
-                'income' => false,
-                'expense' => true,
-                'keywords' => [
-                    'apotheek',
-                    'dokter',
-                    'specialist',
-                    'psycholoog',
-                    'winandy',
-                    'elisabeth'
-                ]
-            ],
-            (object) [
-                'name' => 'Nutsvoorzieningen',
-                'income' => false,
-                'expense' => true,
-                'keywords' => [
-                    'telenet',
-                    'mega',
-                    'pidpa',
-                    'fluvius'
-                ]
-            ],
-            (object) [
-                'name' => 'Onderwijs',
-                'income' => false,
-                'expense' => true,
-                'keywords' => [
-                    'klavertje',
-                    'fluxus',
-                    'school'
-                ]
             ]
         ]);
     }
@@ -113,10 +55,13 @@ class FileController extends Controller
         $file = $request->file('file');
 
         $reader = new \PhpOffice\PhpSpreadsheet\Reader\Csv();
+        $reader->setReadDataOnly(true);
+
         $document = $reader->load($file);
 
         $this->importData = $document->getActiveSheet()->toArray();
         $this->process();
+        $this->export();
 
         return back();
     }
@@ -124,6 +69,8 @@ class FileController extends Controller
     private function process() {
         $this->parseHeader();
         $this->parseContent();
+
+        // dd($this->exportData);
     }
 
     /**
@@ -131,7 +78,16 @@ class FileController extends Controller
     */
     public function export()
     {
-        // return Excel::download(new TransactionsExport, 'users-collection.xlsx');
+        $sheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
+        $sheet->getActiveSheet()->fromArray($this->exportData);
+
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment; filename="'. urlencode('budget-mapping.csv').'"');
+
+        $writer = new \PhpOffice\PhpSpreadsheet\Writer\Csv($sheet);
+        $writer->save('php://output');
+
+        exit();
     }
 
     private function parseHeader() {
