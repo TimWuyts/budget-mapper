@@ -36,6 +36,8 @@
                                     @method('PUT')
 
                                     <input type="text" name="name" value="{{ $category->name }}" />
+                                    <input type="checkbox" name="income" value="1" {{ $category->income ? 'checked="checked': '' }}/>
+                                    <input type="checkbox" name="expense" value="1" {{ $category->expense ? 'checked="checked': '' }}/>
                                     <input type="text" name="keywords" value="{{ $category->keywords->pluck('label')->implode(', ') }}" />
                                     <button type="submit" class="action action--update">Update category</button>
                                 </form>

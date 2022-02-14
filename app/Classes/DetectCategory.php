@@ -2,70 +2,16 @@
 
 namespace App\Classes;
 
+use App\Models\Category;
 use App\Classes\Conversion;
 
 class DetectCategory extends Conversion {
     public function __construct($value)
     {
-        $this->categoryMapping = collect([
-            (object) [
-                'name' => 'Boodschappen',
-                'income' => false,
-                'expense' => true,
-                'keywords' => [
-                    'delhaize',
-                    'aldi',
-                    'albert heijn',
-                    'okay',
-                    'colruyt'
-                ]
-            ],
-            (object) [
-                'name' => 'Eten & Drinken',
-                'income' => false,
-                'expense' => true,
-                'keywords' => [
-                    'vita',
-                    'frietjes',
-                    'donalds',
-                    'burger'
-                ]
-            ],
-            (object) [
-                'name' => 'Gezondheidszorg',
-                'income' => false,
-                'expense' => true,
-                'keywords' => [
-                    'apotheek',
-                    'dokter',
-                    'specialist',
-                    'psycholoog',
-                    'winandy',
-                    'elisabeth'
-                ]
-            ],
-            (object) [
-                'name' => 'Nutsvoorzieningen',
-                'income' => false,
-                'expense' => true,
-                'keywords' => [
-                    'telenet',
-                    'mega',
-                    'pidpa',
-                    'fluvius'
-                ]
-            ],
-            (object) [
-                'name' => 'Onderwijs',
-                'income' => false,
-                'expense' => true,
-                'keywords' => [
-                    'klavertje',
-                    'fluxus',
-                    'school'
-                ]
-            ]
-        ]);
+        $this->categoryMapping = Category::with('keywords')->get()->toArray();
+
+        // TODO: flatten keywords
+        dd($this->categoryMapping);
 
         parent::__construct($value);
     }
@@ -87,7 +33,7 @@ class DetectCategory extends Conversion {
     function contains($str, array $arr): bool
     {
         foreach($arr as $a) {
-            if (stripos($str,$a) !== false) return true;
+            if (stripos($str, $a) !== false) return true;
         }
 
         return false;

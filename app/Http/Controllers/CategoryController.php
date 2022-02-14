@@ -21,6 +21,8 @@ class CategoryController extends Controller
         $category = Category::find($id);
 
         $category->name = $request->get('name');
+        $category->income = $request->has('income');
+        $category->expense = $request->has('expense');
         $category->save();
 
         $keywords = array_filter(explode(',', $request->get('keywords')));
