@@ -4,14 +4,18 @@ namespace App\Classes;
 
 use App\Models\Category;
 use App\Classes\Conversion;
+use Illuminate\Database\Eloquent\Collection;
 
 class DetectCategory extends Conversion {
+
+    private Collection $categoryMapping;
+
     public function __construct($value)
     {
-        $this->categoryMapping = Category::with('keywords')->get()->toArray();
-
-        // TODO: flatten keywords
-        dd($this->categoryMapping);
+        $this->categoryMapping = Category::with('keywords')->get();
+        $this->categoryMapping->each(function($category) {
+            $category->keywords = $category->keywords->pluck('label');
+        });
 
         parent::__construct($value);
     }
@@ -22,7 +26,7 @@ class DetectCategory extends Conversion {
 
         $this->convertedValue = null;
         $this->categoryMapping->each(function($category) use($description) {
-            if ($this->contains($description, $category->keywords)) {
+            if ($this->contains($description, $category->keywords->toArray())) {
                 $this->convertedValue = $category->name;
 
                 return false;
@@ -30,7 +34,7 @@ class DetectCategory extends Conversion {
         });
     }
 
-    function contains($str, array $arr): bool
+    private function contains($str, array $arr): bool
     {
         foreach($arr as $a) {
             if (stripos($str, $a) !== false) return true;
